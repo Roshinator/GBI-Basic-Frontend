@@ -1,6 +1,6 @@
 use std::path::{Path, PathBuf};
 use sdl2::{render::*, video::*, EventPump, event::*, keyboard::*, pixels::*, rect::*};
-use game_boy_inator::{mainboard::Mainboard, ppu};
+use gbi::{mainboard::Mainboard, ppu};
 
 fn main()
 {
@@ -54,7 +54,7 @@ impl PCHardware
     }
 }
 
-impl game_boy_inator::Frontend for PCHardware
+impl gbi::Frontend for PCHardware
 {
     fn event_poll(&mut self)
     {

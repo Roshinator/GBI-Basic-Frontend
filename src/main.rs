@@ -5,6 +5,10 @@ use gbi::{mainboard::Mainboard, ppu};
 fn main()
 {
     let args: Vec<String> = std::env::args().collect();
+    if args.len() < 2
+    {
+        panic!("Please provide a ROM file.");
+    }
     let filename = PathBuf::from(&args[1]);
     let frontend = PCHardware::new();
     let mut motherboard = Mainboard::new(frontend);
@@ -37,7 +41,7 @@ impl PCHardware
         let sdl_context = sdl2::init().unwrap();
         let video_subsystem = sdl_context.video().unwrap();
 
-        let mut window = video_subsystem.window("Game Boy Inator", 810, 730)
+        let window = video_subsystem.window("Game Boy Inator", 810, 730)
             .position_centered()
             .resizable()
             .build()
@@ -56,6 +60,11 @@ impl PCHardware
 
 impl gbi::Frontend for PCHardware
 {
+    fn receive_rom_information(&mut self, title: &str)
+    {
+        self.canvas.window_mut().set_title(&format!("Game Boy Inator - \"{}\"", title)).unwrap();
+    }
+
     fn event_poll(&mut self)
     {
         for event in self.event_pump.poll_iter()

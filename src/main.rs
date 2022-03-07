@@ -54,7 +54,7 @@ impl PCHardware
     }
 }
 
-impl game_boy_hardware::Frontend for PCHardware
+impl game_boy_inator::Frontend for PCHardware
 {
     fn event_poll(&mut self)
     {

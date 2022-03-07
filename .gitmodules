@@ -1,0 +1,3 @@
+[submodule "game-boy-inator"]
+	path = game-boy-inator
+	url = https://github.com/Roshinator/game-boy-inator

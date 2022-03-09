@@ -7,7 +7,8 @@ fn main()
     let args: Vec<String> = std::env::args().collect();
     if args.len() < 2
     {
-        panic!("Please provide a ROM file.");
+        println!("Please provide a ROM file.");
+        std::process::exit(1);
     }
     let filename = PathBuf::from(&args[1]);
     let frontend = PCHardware::new();

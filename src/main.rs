@@ -1,8 +1,8 @@
-use std::path::{Path, PathBuf};
+use std::{path::{Path, PathBuf}, error::Error};
 use sdl2::{render::*, video::*, EventPump, event::*, keyboard::*, pixels::*, rect::*};
 use gbi::{mainboard::Mainboard, ppu};
 
-fn main()
+fn main() -> Result<(), Box<dyn Error>>
 {
     let args: Vec<String> = std::env::args().collect();
     if args.len() < 2
@@ -11,9 +11,9 @@ fn main()
         std::process::exit(1);
     }
     let filename = PathBuf::from(&args[1]);
-    let frontend = PCHardware::new();
+    let frontend = PCHardware::new()?;
     let mut motherboard = Mainboard::new(frontend);
-    motherboard.load_game(Path::new(filename.as_path())).unwrap();
+    motherboard.load_game(Path::new(filename.as_path()))?;
 
     loop
     {
@@ -37,25 +37,27 @@ struct PCHardware
 
 impl PCHardware
 {
-    fn new() -> Self
+    fn new() -> Result<Self, Box<dyn Error>>
     {
-        let sdl_context = sdl2::init().unwrap();
-        let video_subsystem = sdl_context.video().unwrap();
+        let sdl_context = sdl2::init()?;
+        let video_subsystem = sdl_context.video()?;
 
         let window = video_subsystem.window("Game Boy Inator", 810, 730)
             .position_centered()
             .resizable()
-            .build()
-            .unwrap();
-        let mut canvas = window.into_canvas().accelerated().build().unwrap();
-        canvas.set_logical_size(ppu::SCREEN_WIDTH as u32, ppu::SCREEN_HEIGHT as u32).unwrap();
-        canvas.set_integer_scale(true).unwrap();
-        let event_pump = sdl_context.event_pump().unwrap();
-        PCHardware
-        {
-            canvas: canvas,
-            event_pump:event_pump
-        }
+            .build()?;
+        let mut canvas = window.into_canvas().accelerated().build()?;
+        canvas.set_logical_size(ppu::SCREEN_WIDTH as u32, ppu::SCREEN_HEIGHT as u32)?;
+        canvas.set_integer_scale(true)?;
+        let event_pump = sdl_context.event_pump()?;
+        Ok
+        (
+            PCHardware
+            {
+                canvas: canvas,
+                event_pump:event_pump
+            }
+        )
     }
 }
 

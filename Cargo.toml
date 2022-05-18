@@ -13,7 +13,7 @@ path = "game-boy-inator"
 version = "*"
 [features]
 default = ["gui"]
-gui = ["slint", "slint-build"]
+gui = ["slint", "slint-build", "rfd"]
 cpu-debug = []
 "ppu-debug" = []
 
@@ -27,6 +27,7 @@ features = ["bundled",
 sdl2-sys = "=0.35.1"
 cfg-if = "1"
 slint = {version = "0.2", optional = true}
+rfd = {version = "0.8", optional = true}
 
 [build-dependencies]
 slint-build = {version = "0.2", optional = true}

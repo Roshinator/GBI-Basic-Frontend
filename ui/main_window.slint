@@ -1,4 +1,4 @@
-import {Button, ListView} from "std-widgets.slint";
+import {Button, ListView, GridBox, HorizontalBox} from "std-widgets.slint";
 
 export struct GameItem :=
 {
@@ -6,23 +6,63 @@ export struct GameItem :=
     path: string,
 }
 
+export global GameListData :=
+{
+    property<string> path;
+    property<[GameItem]> list-of-roms;
+    callback button-pressed(string);
+    callback select-directory();
+}
+
+export GameList := GridBox
+{
+    Row
+    {
+        HorizontalLayout
+        {
+            alignment: space-between;
+            Text
+            {
+                text: "Current Directory: " + GameListData.path;
+                vertical-alignment: center;
+            }
+            Button
+            {
+                text: "Choose...";
+                clicked => { GameListData.select-directory(); }
+            }
+        }
+    }
+    ListView
+    {
+        colspan: 2;
+        for rom-item in GameListData.list-of-roms: VerticalLayout
+        {
+            HorizontalBox
+            {
+                alignment: space-between;
+                Text
+                {
+                    text: rom-item.name;
+                    font-size: 14px;
+                    vertical-alignment: center;
+                }
+                Button
+                {
+                    text: "Run";
+                    font-size: 14px;
+                    clicked => { GameListData.button-pressed(rom-item.path); }
+                }
+            }
+        }
+    }
+}
+
 export MainWindow := Window
 {
     title: "Game Boy Inator";
-    preferred-width: 800px;
-    preferred-height: 600px;
+    preferred-width: 500px;
+    preferred-height: 500px;
 
-    property<[GameItem]> list-of-roms;
-    callback button-pressed(string);
-
-    ListView
-    {
-        for rom-item in list-of-roms: Button
-        {
-            text: rom-item.name;
-            clicked => { button-pressed(rom-item.path); }
-            preferred-width: 100px;
-            preferred-height: 75px;
-        }
-    }
+    GameList{}
 }

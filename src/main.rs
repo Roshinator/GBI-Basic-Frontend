@@ -8,7 +8,9 @@ cfg_if::cfg_if!
 {
     if #[cfg(feature = "gui")]
     {
-        slint::include_modules!();
+        mod slint_uis;
+        use slint_uis::*;
+
         use slint::*;
     }
 }
@@ -22,42 +24,9 @@ fn main() -> Result<(), Box<dyn Error>>
         {
             if #[cfg(feature = "gui")]
             {
-                let main_window = MainWindow::new();
-
-                let paths = std::fs::read_dir("./").unwrap();
-                let mut roms = Vec::new();
-                for file in paths
-                {
-                    let path = match file.as_ref()
-                    {
-                        Ok(x) if x.path().is_file() => x.path(),
-                        _ => continue,
-                    };
-                    match path.extension()
-                    {
-                        Some(p) if p == "gb" =>
-                        {
-                            println!("{:?}", path);
-                            roms.push
-                            (
-                                GameItem
-                                {
-                                    name: SharedString::from(path.file_name().unwrap().to_str().unwrap()),
-                                    path: SharedString::from(path.to_str().unwrap())
-                                }
-                            );
-                        }
-                        _ => {}
-                    }
-                }
-
-                main_window.set_list_of_roms(ModelRc::from(std::rc::Rc::new(VecModel::from(roms))));
-                main_window.on_button_pressed(move |s: SharedString|
-                {
-                    println!("{}", s);
-                    launch_game(s.to_string()).unwrap();
-                });
-                main_window.run();
+                let window = main_window::new();
+                main_window::update_games(&window, &PathBuf::from("./")).unwrap();
+                window.run();
                 Ok(())
             }
             else
@@ -73,7 +42,7 @@ fn main() -> Result<(), Box<dyn Error>>
     }
 }
 
-fn launch_game(path: String) -> Result<(), Box<dyn Error>>
+pub fn launch_game(path: String) -> Result<(), Box<dyn Error>>
 {
     let filename = PathBuf::from(path);
     let frontend = PCHardware::new()?;

@@ -1,4 +1,4 @@
-import {Button, ListView, GridBox, HorizontalBox} from "std-widgets.slint";
+import {Button, ListView, GridBox, HorizontalBox, VerticalBox} from "std-widgets.slint";
 
 export struct GameItem :=
 {
@@ -9,23 +9,29 @@ export struct GameItem :=
 export global GameListData :=
 {
     property<string> path;
-    property<[GameItem]> list-of-roms;
+    property<[GameItem]> list-of-roms: [{name: "snake.gb", path: "./snake.gb"}];
     callback button-pressed(string);
     callback select-directory();
 }
 
-export GameList := GridBox
+export GameList := VerticalBox
 {
-    Row
+    HorizontalBox
     {
-        HorizontalLayout
+        horizontal-stretch: 1;
+        alignment: space-between;
+        padding-top: 0px;
+        padding-bottom: 0px;
+        Text
         {
-            alignment: space-between;
-            Text
-            {
-                text: "Current Directory: " + GameListData.path;
-                vertical-alignment: center;
-            }
+            vertical-stretch: 1;
+            text: "Current Directory: " + GameListData.path;
+            vertical-alignment: center;
+            wrap: TextWrap.word-wrap;
+        }
+        VerticalBox
+        {
+            alignment: center;
             Button
             {
                 text: "Choose...";
@@ -35,7 +41,6 @@ export GameList := GridBox
     }
     ListView
     {
-        colspan: 2;
         for rom-item in GameListData.list-of-roms: VerticalLayout
         {
             HorizontalBox
@@ -46,6 +51,7 @@ export GameList := GridBox
                     text: rom-item.name;
                     font-size: 14px;
                     vertical-alignment: center;
+                    overflow: TextOverflow.elide;
                 }
                 Button
                 {
@@ -63,6 +69,7 @@ export MainWindow := Window
     title: "Game Boy Inator";
     preferred-width: 500px;
     preferred-height: 500px;
-
+    min-width: 250px;
+    min-height: 250px;
     GameList{}
 }

@@ -48,3 +48,42 @@ jobs:
       run: cargo build --release --verbose
     - name: Run Tests
       run: cargo test --release --verbose
+
+build-linux-nogui:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+      with:
+        submodules: recursive
+    - name: Update Rust
+      run: rustup update
+    - name: Build
+      run: cargo build --release --verbose --no-default-features
+    - name: Run Tests
+      run: cargo test --release --verbose --no-default-features
+
+  build-mac-nogui:
+    runs-on: macos-latest
+    steps:
+    - uses: actions/checkout@v2
+      with:
+          submodules: recursive
+    - name: Update Rust
+      run: rustup update
+    - name: Build
+      run: cargo build --release --verbose --no-default-features
+    - name: Run Tests
+      run: cargo test --release --verbose --no-default-features
+
+  build-windows-nogui:
+    runs-on: windows-latest
+    steps:
+    - uses: actions/checkout@v2
+      with:
+        submodules: recursive
+    - name: Update Rust
+      run: rustup update
+    - name: Build
+      run: cargo build --release --verbose --no-default-features
+    - name: Run Tests
+      run: cargo test --release --verbose --no-default-features

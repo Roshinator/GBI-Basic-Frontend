@@ -22,7 +22,15 @@ fn main() -> Result<(), Box<dyn Error>>
         {
             if #[cfg(feature = "gui")]
             {
-                open_main_window();
+                let main_window = MainWindow::new();
+                let main_window_weak = main_window.as_weak();
+                main_window.on_button_pressed(move |s: SharedString|
+                {
+                    println!("{}", s);
+                    launch_game(s.to_string()).unwrap();
+                    main_window_weak.upgrade().unwrap().window().hide();
+                });
+                main_window.run();
                 Ok(())
             }
             else
@@ -36,19 +44,6 @@ fn main() -> Result<(), Box<dyn Error>>
     {
         launch_game(String::from(&args[1]))
     }
-}
-
-fn open_main_window()
-{
-    let main_window = MainWindow::new();
-    let main_window_weak = main_window.as_weak();
-    main_window.on_button_pressed(move |s: SharedString|
-    {
-        println!("{}", s);
-        launch_game(s.to_string()).unwrap();
-        main_window_weak.upgrade().unwrap().window().hide();
-    });
-    main_window.run();
 }
 
 fn launch_game(path: String) -> Result<(), Box<dyn Error>>

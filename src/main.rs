@@ -23,12 +23,39 @@ fn main() -> Result<(), Box<dyn Error>>
             if #[cfg(feature = "gui")]
             {
                 let main_window = MainWindow::new();
-                let main_window_weak = main_window.as_weak();
+
+                let paths = std::fs::read_dir("./").unwrap();
+                let mut roms = Vec::new();
+                for file in paths
+                {
+                    let path = match file.as_ref()
+                    {
+                        Ok(x) if x.path().is_file() => x.path(),
+                        _ => continue,
+                    };
+                    match path.extension()
+                    {
+                        Some(p) if p == "gb" =>
+                        {
+                            println!("{:?}", path);
+                            roms.push
+                            (
+                                GameItem
+                                {
+                                    name: SharedString::from(path.file_name().unwrap().to_str().unwrap()),
+                                    path: SharedString::from(path.to_str().unwrap())
+                                }
+                            );
+                        }
+                        _ => {}
+                    }
+                }
+
+                main_window.set_list_of_roms(ModelRc::from(std::rc::Rc::new(VecModel::from(roms))));
                 main_window.on_button_pressed(move |s: SharedString|
                 {
                     println!("{}", s);
                     launch_game(s.to_string()).unwrap();
-                    main_window_weak.upgrade().unwrap().window().hide();
                 });
                 main_window.run();
                 Ok(())

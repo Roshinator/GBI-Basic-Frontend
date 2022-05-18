@@ -1,19 +1,28 @@
-import {Button} from "std-widgets.slint";
+import {Button, ListView} from "std-widgets.slint";
+
+export struct GameItem :=
+{
+    name: string,
+    path: string,
+}
 
 export MainWindow := Window
 {
     title: "Game Boy Inator";
-    width: 800px;
-    height: 600px;
+    preferred-width: 800px;
+    preferred-height: 600px;
 
+    property<[GameItem]> list-of-roms;
     callback button-pressed(string);
 
-    GridLayout
+    ListView
     {
-        btn1 := Button
+        for rom-item in list-of-roms: Button
         {
-            text: "snake.gb";
-            clicked => { button-pressed("snake.gb"); }
+            text: rom-item.name;
+            clicked => { button-pressed(rom-item.path); }
+            preferred-width: 100px;
+            preferred-height: 75px;
         }
     }
 }

@@ -1,0 +1,19 @@
+import {Button} from "std-widgets.slint";
+
+export MainWindow := Window
+{
+    title: "Game Boy Inator";
+    width: 800px;
+    height: 600px;
+
+    callback button-pressed(string);
+
+    GridLayout
+    {
+        btn1 := Button
+        {
+            text: "snake.gb";
+            clicked => { button-pressed("snake.gb"); }
+        }
+    }
+}

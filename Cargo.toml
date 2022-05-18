@@ -2,6 +2,7 @@
 name = "gbi-basic-frontend"
 version = "0.1.0"
 edition = "2021"
+build = "build.rs"
 
 [[bin]]
 name = "gbi-basic-frontend"
@@ -10,10 +11,11 @@ path = "src/main.rs"
 [dependencies.game-boy-inator]
 path = "game-boy-inator"
 version = "*"
-features = [
-    # "cpu-debug",
-    # "ppu-debug"
-    ]
+[features]
+default = ["gui"]
+gui = []
+cpu-debug = []
+# "ppu-debug" = []
 
 [dependencies.sdl2]
 version = "=0.35.1"
@@ -23,3 +25,10 @@ features = ["bundled",
 
 [dependencies]
 sdl2-sys = "=0.35.1"
+cfg-if = "1"
+
+[dependencies.slint]
+version = "0.2"
+
+[build-dependencies]
+slint-build = "0.2"

@@ -49,7 +49,7 @@ jobs:
     - name: Run Tests
       run: cargo test --release --verbose
 
-build-linux-nogui:
+  build-linux-nogui:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2

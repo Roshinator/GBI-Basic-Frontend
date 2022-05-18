@@ -18,6 +18,8 @@ jobs:
         submodules: recursive
     - name: Update Rust
       run: rustup update
+    - name: Qt dependency
+      run: sudo apt install qt5-default
     - name: Build
       run: cargo build --release --verbose
     - name: Run Tests

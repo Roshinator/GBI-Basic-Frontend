@@ -4,7 +4,7 @@ use std::{path::PathBuf};
 
 use slint::{*};
 
-pub fn new() -> MainWindow
+pub fn create() -> MainWindow
 {
     let window = MainWindow::new();
     let weak = window.as_weak();
@@ -27,6 +27,10 @@ pub fn new() -> MainWindow
         let window = weak.upgrade().unwrap();
         let game_list_data = window.global::<GameListData>();
         update_games(&window, &PathBuf::from(String::from(game_list_data.get_path()))).unwrap();
+    });
+    window.window().on_close_requested(|| -> CloseRequestResponse
+    {
+        std::process::exit(0);
     });
     window
 }
@@ -63,9 +67,11 @@ pub fn update_games(window: &MainWindow, path: &PathBuf) -> Result<(), std::io::
     let game_list_data = window.global::<GameListData>();
     game_list_data.set_path(SharedString::from(std::fs::canonicalize(path).unwrap().to_str().unwrap()));
     game_list_data.set_list_of_roms(ModelRc::from(std::rc::Rc::new(VecModel::from(roms))));
+    let weak = window.as_weak();
     game_list_data.on_button_pressed(move |s: SharedString|
     {
         println!("Launching {}", s);
+        weak.upgrade().unwrap().hide();
         crate::launch_game(s.to_string()).unwrap();
     });
     Ok(())

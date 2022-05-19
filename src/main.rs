@@ -9,9 +9,6 @@ cfg_if::cfg_if!
     if #[cfg(feature = "gui")]
     {
         mod slint_uis;
-        use slint_uis::*;
-
-        use slint::*;
     }
 }
 
@@ -24,9 +21,10 @@ fn main() -> Result<(), Box<dyn Error>>
         {
             if #[cfg(feature = "gui")]
             {
-                let window = main_window::new();
-                main_window::update_games(&window, &PathBuf::from("./")).unwrap();
-                window.run();
+                loop
+                {
+                    open_window();
+                }
                 Ok(())
             }
             else
@@ -51,6 +49,21 @@ pub fn launch_game(path: String) -> Result<(), Box<dyn Error>>
 
     loop
     {
-        motherboard.execute_frame();
+        if motherboard.execute_frame()
+        {
+            break;
+        }
     }
+    Ok(())
+}
+
+#[cfg(feature = "gui")]
+fn open_window()
+{
+    use slint_uis::*;
+    use slint::*;
+
+    let window = main_window::create();
+    main_window::update_games(&window, &PathBuf::from("./")).unwrap();
+    window.run();
 }

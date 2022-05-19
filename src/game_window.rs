@@ -1,7 +1,7 @@
 use std::error::Error;
 
 use sdl2::{render::*, video::*, EventPump, event::*, keyboard::*, pixels::*, rect::*};
-use gbi::{mainboard::Mainboard, ppu};
+use gbi::ppu;
 
 const COLORS:[Color; 4] =
 [
@@ -37,8 +37,8 @@ impl PCHardware
         (
             PCHardware
             {
-                canvas: canvas,
-                event_pump:event_pump,
+                canvas,
+                event_pump,
                 game_title: String::new()
             }
         )
@@ -53,20 +53,25 @@ impl gbi::Frontend for PCHardware
         self.canvas.window_mut().set_title(&self.game_title).unwrap();
     }
 
-    fn event_poll(&mut self)
+    fn event_poll(&mut self) -> bool
     {
         for event in self.event_pump.poll_iter()
         {
             match event
             {
-                Event::Quit {..} |
+                Event::Window { win_event: WindowEvent::Close, .. } |
                 Event::KeyDown { keycode: Some(Keycode::Escape), .. } =>
+                {
+                    return true;
+                },
+                Event::Quit {..} =>
                 {
                     std::process::exit(0);
                 },
                 _ => {}
             }
         }
+        false
     }
 
     fn video_update(&mut self, buffer: &[[u8; ppu::SCREEN_HEIGHT];ppu::SCREEN_WIDTH], frame_count: u64)

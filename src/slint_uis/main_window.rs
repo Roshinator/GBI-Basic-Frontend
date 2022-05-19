@@ -21,6 +21,13 @@ pub fn new() -> MainWindow
             update_games(&window, &x).unwrap();
         }
     });
+    let weak = window.as_weak();
+    window.global::<GameListData>().on_refresh_directory(move ||
+    {
+        let window = weak.upgrade().unwrap();
+        let game_list_data = window.global::<GameListData>();
+        update_games(&window, &PathBuf::from(String::from(game_list_data.get_path()))).unwrap();
+    });
     window
 }
 
@@ -39,7 +46,7 @@ pub fn update_games(window: &MainWindow, path: &PathBuf) -> Result<(), std::io::
         {
             Some(p) if p == "gb" =>
             {
-                println!("{:?}", path);
+                println!("Found file in directory {:?}", path);
                 roms.push
                 (
                     GameItem
@@ -58,7 +65,7 @@ pub fn update_games(window: &MainWindow, path: &PathBuf) -> Result<(), std::io::
     game_list_data.set_list_of_roms(ModelRc::from(std::rc::Rc::new(VecModel::from(roms))));
     game_list_data.on_button_pressed(move |s: SharedString|
     {
-        println!("{}", s);
+        println!("Launching {}", s);
         crate::launch_game(s.to_string()).unwrap();
     });
     Ok(())

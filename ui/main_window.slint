@@ -12,30 +12,93 @@ export global GameListData :=
     property<[GameItem]> list-of-roms: [{name: "snake.gb", path: "./snake.gb"}];
     callback button-pressed(string);
     callback select-directory();
+    callback refresh-directory();
+}
+
+RomListItem := Rectangle
+{
+    property<string> rom-name;
+    property<string> rom-path;
+
+    zone := TouchArea
+    {
+        HorizontalBox
+        {
+            padding-top: 5px;
+            padding-bottom: 5px;
+            alignment: space-between;
+            Text
+            {
+                text: rom-name;
+                font-size: 14px;
+                vertical-alignment: center;
+                overflow: TextOverflow.elide;
+            }
+            Button
+            {
+                text: "Run";
+                font-size: 14px;
+                clicked => { GameListData.button-pressed(rom-path); }
+            }
+        }
+    }
+
+    states
+    [
+        hovered when zone.has-hover :
+        {
+            background: #77777730;
+        }
+    ]
+
+    animate background
+    {
+        duration: 100ms;
+        easing: ease-in-out;
+    }
 }
 
 export GameList := VerticalBox
 {
-    HorizontalBox
+    VerticalLayout
     {
-        horizontal-stretch: 1;
-        alignment: space-between;
-        padding-top: 0px;
-        padding-bottom: 0px;
-        Text
+        HorizontalBox
         {
-            vertical-stretch: 1;
-            text: "Current Directory: " + GameListData.path;
-            vertical-alignment: center;
-            wrap: TextWrap.word-wrap;
-        }
-        VerticalBox
-        {
-            alignment: center;
-            Button
+            horizontal-stretch: 1;
+            alignment: space-between;
+            padding-top: 0px;
+            padding-bottom: 0px;
+            Text
             {
-                text: "Choose...";
-                clicked => { GameListData.select-directory(); }
+                vertical-stretch: 1;
+                text: "Current Directory: " + GameListData.path;
+                vertical-alignment: center;
+                wrap: TextWrap.word-wrap;
+            }
+            VerticalLayout
+            {
+                alignment: center;
+                Button
+                {
+                    text: "Choose...";
+                    clicked => { GameListData.select-directory(); }
+                }
+            }
+        }
+        HorizontalBox
+        {
+            padding-top: 0px;
+            padding-bottom: 0px;
+            alignment: end;
+            VerticalLayout
+            {
+                padding-top: 5px;
+                alignment: center;
+                Button
+                {
+                    text: "Refresh";
+                    clicked => { GameListData.refresh-directory(); }
+                }
             }
         }
     }
@@ -43,22 +106,10 @@ export GameList := VerticalBox
     {
         for rom-item in GameListData.list-of-roms: VerticalLayout
         {
-            HorizontalBox
+            RomListItem
             {
-                alignment: space-between;
-                Text
-                {
-                    text: rom-item.name;
-                    font-size: 14px;
-                    vertical-alignment: center;
-                    overflow: TextOverflow.elide;
-                }
-                Button
-                {
-                    text: "Run";
-                    font-size: 14px;
-                    clicked => { GameListData.button-pressed(rom-item.path); }
-                }
+                rom-name: rom-item.name;
+                rom-path: rom-item.path;
             }
         }
     }

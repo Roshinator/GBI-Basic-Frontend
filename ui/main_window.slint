@@ -1,24 +1,24 @@
 import {Button, ListView, GridBox, HorizontalBox, VerticalBox} from "std-widgets.slint";
 
-export struct GameItem :=
+export struct GameItem
 {
     name: string,
     path: string,
 }
 
-export global GameListData :=
+export global GameListData
 {
-    property<string> path;
-    property<[GameItem]> list-of-roms: [{name: "snake.gb", path: "./snake.gb"}];
+    in property<string> path;
+    in-out property<[GameItem]> list-of-roms: [{name: "snake.gb", path: "./snake.gb"}];
     callback button-pressed(string);
     callback select-directory();
     callback refresh-directory();
 }
 
-RomListItem := Rectangle
+export component RomListItem inherits Rectangle
 {
-    property<string> rom-name;
-    property<string> rom-path;
+    in-out property<string> rom-name;
+    in-out property<string> rom-path;
 
     zone := TouchArea
     {
@@ -37,7 +37,6 @@ RomListItem := Rectangle
             Button
             {
                 text: "Run";
-                font-size: 14px;
                 clicked => { GameListData.button-pressed(rom-path); }
             }
         }
@@ -58,7 +57,7 @@ RomListItem := Rectangle
     }
 }
 
-export GameList := VerticalBox
+export component GameList inherits VerticalBox
 {
     VerticalLayout
     {
@@ -115,7 +114,7 @@ export GameList := VerticalBox
     }
 }
 
-export MainWindow := Window
+export component MainWindow inherits Window
 {
     title: "Game Boy Inator";
     preferred-width: 500px;

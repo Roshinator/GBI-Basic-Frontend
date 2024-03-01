@@ -18,16 +18,16 @@ cpu-debug = []
 "ppu-debug" = []
 
 [dependencies.sdl2]
-version = "=0.35.1"
+version = "0.36"
 features = ["bundled",
         "static-link"
     ]
 
 [dependencies]
-sdl2-sys = "=0.35.1"
+sdl2-sys = "0.36"
 cfg-if = "1"
-slint = {version = "0.2", optional = true}
+slint = {version = "1.4", optional = true}
 rfd = {version = "0.8", optional = true}
 
 [build-dependencies]
-slint-build = {version = "0.2", optional = true}
+slint-build = {version = "1.4", optional = true}

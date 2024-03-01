@@ -1,12 +1,13 @@
 
 slint::include_modules!();
-use std::{path::PathBuf};
+use std::{path::PathBuf, rc::Rc};
 
 use slint::{*};
+use slint::platform::{WindowAdapter, Renderer};
 
 pub fn create() -> MainWindow
 {
-    let window = MainWindow::new();
+    let window = MainWindow::new().unwrap();
     let weak = window.as_weak();
     window.global::<GameListData>().on_select_directory(move ||
     {
@@ -21,6 +22,7 @@ pub fn create() -> MainWindow
             update_games(&window, &x).unwrap();
         }
     });
+
     let weak = window.as_weak();
     window.global::<GameListData>().on_refresh_directory(move ||
     {

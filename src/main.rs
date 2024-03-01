@@ -25,7 +25,6 @@ fn main() -> Result<(), Box<dyn Error>>
                 {
                     open_window();
                 }
-                Ok(())
             }
             else
             {

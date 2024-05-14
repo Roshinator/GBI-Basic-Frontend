@@ -73,7 +73,7 @@ pub fn update_games(window: &MainWindow, path: &PathBuf) -> Result<(), std::io::
     game_list_data.on_button_pressed(move |s: SharedString|
     {
         println!("Launching {}", s);
-        weak.upgrade().unwrap().hide();
+        weak.upgrade().unwrap().hide().unwrap();
         crate::launch_game(s.to_string()).unwrap();
     });
     Ok(())
